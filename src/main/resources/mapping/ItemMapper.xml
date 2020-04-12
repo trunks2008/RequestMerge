@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.test.merge.mapper.ItemMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.test.merge.entity.Item" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.cn.test.merge.entity.Item" >
+    insert into item (id, price)
+    values (#{id,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cn.test.merge.entity.Item" >
+    insert into item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectByCode" resultType="com.cn.test.merge.entity.Item">
+    select * from item where id=#{0}
+  </select>
+
+  <select id="selectByCodes" resultType="com.cn.test.merge.entity.Item">
+    select * from item
+    <where>
+      id in
+      <foreach item="codes" collection="list" separator="," open="(" close=")" index="">
+        #{codes, jdbcType=VARCHAR}
+      </foreach>
+    </where>
+  </select>
+
+
+</mapper>
